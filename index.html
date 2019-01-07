@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+
+<body>
+    <input id="a" type="number">
+    <input id="b" type="number">
+    <input id="c" type="number">
+
+    <input id="calcula" type="button" value="calcula" />
+    <script type="text/javascript">
+
+        document.getElementById('calcula').addEventListener('click', (e) => {
+            let a, b, c;
+
+            a = document.getElementById('a').value;
+            b = document.getElementById('b').value;
+            c = document.getElementById('c').value;
+
+            // ecuacion(
+            //     a ? parseInt(a) : 0,
+            //     b ? parseInt(b) : 0,
+            //     c ? parseInt(c) : 0
+            // );
+
+            test(parseInt(a), parseInt(b), parseInt(c));
+        });
+
+        let ecuacion = (a = 0, b = 0, c = 0) => {
+            let interior = b**2 - 4 * a * c;
+
+            if(a == 0 || interior < 0)return;
+
+            let divisor = 2 * a;
+            interior = Math.sqrt(interior);
+
+            let r1 = (-b + interior) / divisor;
+            let r2 = (-b - interior) / divisor;
+
+            console.log(r1, r2);
+        }
+
+        let test = (aa, vi, at) => {
+            let byYear = vi / aa;
+            let result = vi - (at * byYear);
+
+            alert(result);
+        }
+
+        let area = (lado1 = 0, lado2 = 0, triangulo = false) => {
+
+            if(!lado2) return lado1 * lado1;
+
+            let area = lado1 * lado2;
+
+            if(triangulo) area /= 2;
+
+            return area;
+        }
+
+        let pitagoras = (b, c) => {
+            return Math.sqrt(b**2 - c**2);
+        }
+
+    </script>
+</body>
+
+</html>

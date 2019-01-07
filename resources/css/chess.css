@@ -1,0 +1,33 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#chess {
+    box-sizing: content-box;
+    display: flex;
+    flex-wrap: wrap;
+    border: 0 solid brown;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.cell>img {
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.invert-color {
+    filter: invert(100%);
+}
+
+.cell:hover {
+    background-color: grey !important;
+    cursor: pointer;
+}
