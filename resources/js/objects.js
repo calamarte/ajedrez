@@ -12,8 +12,8 @@ class Ficha {
         this.color = color;
     }
 
-    posiblesMovimientos() {
-        return MOVIMINETOS[this.tipo]();
+    posiblesMovimientos(celda, tablero) {
+        return MOVIMINETOS[this.tipo](celda, tablero);
     }
 }
 
@@ -24,14 +24,14 @@ class Celda {
         this.tamano;
         this.backgroundColor = backgroundColor;
         this.element = element;
-        this.ficha;
+        this.ficha = null;
     }
 
     setFicha(ficha) {
         this.ficha = ficha;
         let img = this.element.getElementsByTagName('img')[0];
         img.src = 'resources/img/' + this.ficha.tipo + '.png';
-        if (!this.ficha.isWhite) img.classList.add('invert-color');
+        if (this.ficha.color === 0) img.classList.add('invert-color');
     }
 
     removeFicha() {
@@ -42,16 +42,16 @@ class Celda {
         this.ficha = null;
     }
 
-    posiblesMovimientos() {
-        if (this.ficha) return this.ficha.posiblesMovimientos(this);
+    posiblesMovimientos(tablero) {
+        if (this.ficha) return this.ficha.posiblesMovimientos(this, tablero);
         else return [];
     }
 
     selectRoute() {
         let color;
 
-        if (this.ficha) color = config.celda.selectKill;
-        else color = config.celda.selectPosibles;
+        if (this.ficha) color = CONFIG.celda.selectKill;
+        else color = CONFIG.celda.selectPosibles;
 
         this.element.style.backgroundColor = color;
     }
@@ -80,7 +80,7 @@ class Chess {
     createTable() {
         let width = parseInt(this.elemento.style.width.split('p')[0]) / 8;
 
-        chess.style.borderWidth = width + 'px';
+        this.elemento.style.borderWidth = width + 'px';
         console.log('tamano', width);
 
         let black = true;
@@ -90,7 +90,7 @@ class Chess {
                 let cell = document.createElement('div');
                 cell.appendChild(document.createElement('img'));
 
-                let backgroundColor = blackLine ? config.celda.negro : config.celda.blanco;
+                let backgroundColor = blackLine ? CONFIG.celda.negro : CONFIG.celda.blanco;
 
                 cell.id = i + '-' + k + '-cell';
                 cell.classList.add('cell');
@@ -98,19 +98,20 @@ class Chess {
                 cell.style.height = width + 'px';
                 cell.style.backgroundColor = backgroundColor;
 
+                this.elemento.appendChild(cell);
+
                 let celda = new Celda(cell, backgroundColor, {y:i, x:k})
 
                 celda.element.onclick = (e) => {
                     if (celda.ficha) celda.removeFicha();
-                    else celda.setFicha(new Ficha('peon', false));
+                    else celda.setFicha(new Ficha('peon', 0));
 
                 }
 
                 let coordenadas = [];
                 celda.element.onmouseover = (e) => {
-                    if (celda.ficha) return;
-
-                    coordenadas = celda.posiblesMovimientos();
+                    coordenadas = celda.posiblesMovimientos(this.tablero);
+                    console.log(coordenadas);
 
                     coordenadas.forEach((celda) => {
                         celda.selectRoute();
@@ -123,14 +124,17 @@ class Chess {
                     });
                 }
 
-                elemento.appendChild(cell);
 
-                tablero[i].push(celda);
+                this.tablero[i].push(celda);
 
                 blackLine = !blackLine;
             }
             black = !black;
             blackLine = black;
         }
+    }
+
+    setFicha(coordenadas, ficha){
+        this.tablero[coordenadas.y][coordenadas.x].setFicha(ficha);
     }
 }

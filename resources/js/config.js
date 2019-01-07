@@ -1,10 +1,10 @@
-const config = {
-    tablero = {},
-    celda = {
-        blanco = 'white',
-        negro = 'black',
-        selectPosibles = 'orange',
-        selectKill = 'red'
+let CONFIG = {
+    tablero: {},
+    celda: {
+        blanco: 'white',
+        negro: 'black',
+        selectPosibles: 'orange',
+        selectKill: 'red'
     },
-    ficha = {}
+    ficha: {}
 }
