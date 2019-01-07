@@ -82,7 +82,6 @@ class Chess {
         let width = parseInt(this.elemento.style.width.split('p')[0]) / 8;
 
         this.elemento.style.borderWidth = width + 'px';
-        console.log('tamano', width);
 
         let black = true;
         for (let i = 0; i < 8; i++) {
@@ -112,7 +111,6 @@ class Chess {
                 let coordenadas = [];
                 celda.element.onmouseover = (e) => {
                     coordenadas = celda.posiblesMovimientos(this.tablero);
-                    console.log(coordenadas);
 
                     coordenadas.forEach((celda) => {
                         celda.selectRoute();
@@ -137,5 +135,44 @@ class Chess {
 
     setFicha(coordenadas, ficha){
         this.tablero[coordenadas.y][coordenadas.x].setFicha(ficha);
+    }
+
+    clearTablero(){
+        this.tablero.forEach((t)=>{
+            t.forEach((celda) => {
+                celda.removeFicha();
+            });
+        });
+    }
+
+    colocarFichas(){
+        this.clearTablero();
+
+        let tipos = ['torre', 'caballo', 'alfil', 'reina', 'rey', 'alfil', 'caballo', 'torre'];
+        
+        //fichas blancas
+        let fila = this.tablero[0];
+        for(let i = 0; i < fila.length;i++){
+            fila[i].setFicha(new Ficha(tipos[i], 1));
+        }
+
+        fila = this.tablero[1];
+
+        fila.forEach((celda)=>{
+            celda.setFicha(new Ficha('peon', 1));
+        });
+
+        //fichas negras
+        fila = this.tablero[7];
+        
+        for(let i = 0; i < fila.length;i++){
+            fila[i].setFicha(new Ficha(tipos[i], 0));
+        }
+
+        fila = this.tablero[6];
+
+        fila.forEach((celda)=>{
+            celda.setFicha(new Ficha('peon', 0));
+        });
     }
 }

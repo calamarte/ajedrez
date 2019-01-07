@@ -1,6 +1,5 @@
 const MOVIMINETOS = {
     peon: (celda, tablero) => {
-        console.log(celda, tablero);
         let ficha = celda.ficha;
         let coord = celda.coordenadas;
         let movimientos = [];
@@ -29,8 +28,6 @@ const MOVIMINETOS = {
             }
         }
 
-        console.log(m1, m2, m3, m4);
-
         if (m1 && !m1.ficha) movimientos.push(m1);
 
         if (m2 && !m1.ficha && ((coord.y === 1 && ficha.color === 1) || coord.y === 6 && ficha.color === 0) && !m2.ficha) movimientos.push(m2);
@@ -42,9 +39,59 @@ const MOVIMINETOS = {
         return movimientos;
     },
 
-    torre: (celda) => {},
-    alfil: (celda) => {},
-    caballo: (celda) => {},
-    reina: (celda) => {},
-    rey: (celda) => {}
+    torre: (celda, tablero) => {
+        let ficha = celda.ficha;
+        let coord = celda.coordenadas;
+        let movimientos = [];
+
+        let exist = v => v >= 0 && v <= 7;
+        let ejeX = (multi = 1)=>{
+            for (let i = 1; i <= 7; i++) {
+                let y = coord.y + (i * multi);
+                if (exist(y)) {
+                    let c = tablero[y][coord.x];
+                    if (!c.ficha) {
+                        movimientos.push(c);
+                        continue;
+    
+                    } else if (c.ficha && c.ficha.color !== ficha.color) {
+                        movimientos.push(c);
+                    }
+    
+                    break;
+                }
+                break;
+            }
+        }
+
+        let ejeY = (multi = 1) =>{
+            for (let i = 1; i <= 7; i++) {
+                let x = coord.x + (i * multi);
+                if (exist(x)) {
+                    let c = tablero[coord.y][x];
+                    if (!c.ficha) {
+                        movimientos.push(c);
+                        continue;
+    
+                    } else if (c.ficha && c.ficha.color !== ficha.color) {
+                        movimientos.push(c);
+                    }
+    
+                    break;
+                }
+                break;
+            }
+        } 
+
+        ejeX(1);
+        ejeX(-1);
+        ejeY(1);
+        ejeY(-1);
+
+        return movimientos;
+    },
+    alfil: (celda, tablero) => [],
+    caballo: (celda, tablero) => [],
+    reina: (celda, tablero) => [],
+    rey: (celda, tablero) => []
 }
