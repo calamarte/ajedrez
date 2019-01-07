@@ -28,6 +28,7 @@ class Celda {
     }
 
     setFicha(ficha) {
+        if(this.ficha) this.removeFicha();
         this.ficha = ficha;
         let img = this.element.getElementsByTagName('img')[0];
         img.src = 'resources/img/' + this.ficha.tipo + '.png';
