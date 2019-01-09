@@ -38,14 +38,12 @@ const MOVIMINETOS = {
 
         return movimientos;
     },
-
     torre: (celda, tablero) => {
         let ficha = celda.ficha;
         let coord = celda.coordenadas;
         let movimientos = [];
 
-        let exist = v => v >= 0 && v <= 7;
-        let ejeX = (multi = 1)=>{
+        let ejeX = (multi = 1) => {
             for (let i = 1; i <= 7; i++) {
                 let y = coord.y + (i * multi);
                 if (exist(y)) {
@@ -53,18 +51,18 @@ const MOVIMINETOS = {
                     if (!c.ficha) {
                         movimientos.push(c);
                         continue;
-    
+
                     } else if (c.ficha && c.ficha.color !== ficha.color) {
                         movimientos.push(c);
                     }
-    
+
                     break;
                 }
                 break;
             }
         }
 
-        let ejeY = (multi = 1) =>{
+        let ejeY = (multi = 1) => {
             for (let i = 1; i <= 7; i++) {
                 let x = coord.x + (i * multi);
                 if (exist(x)) {
@@ -72,16 +70,16 @@ const MOVIMINETOS = {
                     if (!c.ficha) {
                         movimientos.push(c);
                         continue;
-    
+
                     } else if (c.ficha && c.ficha.color !== ficha.color) {
                         movimientos.push(c);
                     }
-    
+
                     break;
                 }
                 break;
             }
-        } 
+        }
 
         ejeX(1);
         ejeX(-1);
@@ -90,8 +88,76 @@ const MOVIMINETOS = {
 
         return movimientos;
     },
-    alfil: (celda, tablero) => [],
-    caballo: (celda, tablero) => [],
-    reina: (celda, tablero) => [],
+    alfil: (celda, tablero) => {
+        let ficha = celda.ficha;
+        let coord = celda.coordenadas;
+        let movimientos = [];
+
+        let calc = (multiY = 1, multiX = 1) => {
+            let y, x;
+            for (let i = 1; i <= 7; i++) {
+                y = coord.y + (i * multiY);
+                x = coord.x + (i * multiX);
+                if (exist(y) && exist(x)) {
+                    let c = tablero[y][x];
+                    if (!c.ficha) {
+                        movimientos.push(c);
+                        continue;
+
+                    } else if (c.ficha && c.ficha.color !== ficha.color) {
+                        movimientos.push(c);
+                    }
+
+                    break;
+                }
+                break;
+            }
+        }
+
+        calc(1, 1);
+        calc(-1, 1);
+        calc(1, -1);
+        calc(-1, -1);
+
+        return movimientos;
+    },
+    caballo: (celda, tablero) => {
+        let movimientos = [];
+        let coordenadas = celda.coordenadas;
+        let posiblesCoord = [
+            {y:1, x:2},
+            {y:2, x:1},
+            {y:-1, x:-2},
+            {y:-2, x:-1},
+            {y:-2, x: 1},
+            {y:1, x: -2},
+            {y:2, x:-1},
+            {y:-1,x:2}
+        ];
+
+        let y,x, mv;
+        posiblesCoord.forEach((coord) =>{
+            y = coordenadas.y + coord.y;
+            x = coordenadas.x + coord.x;
+            if(exist(y) && exist(x)){
+                mv = tablero[y][x];
+
+                if(!mv.ficha || (mv.ficha && mv.ficha.color !== celda.ficha.color)){
+                    movimientos.push(mv);
+                }
+
+            }
+        });
+
+        return movimientos;
+    },
+    reina: (celda, tablero) => {
+        return MOVIMINETOS.alfil(celda, tablero)
+            .concat(MOVIMINETOS.torre(celda, tablero));
+    },
     rey: (celda, tablero) => []
+}
+
+function exist(v) {
+    return v >= 0 && v <= 7;
 }
