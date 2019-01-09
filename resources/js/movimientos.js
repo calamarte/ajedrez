@@ -125,13 +125,13 @@ const MOVIMINETOS = {
         let movimientos = [];
         let coordenadas = celda.coordenadas;
         let posiblesCoord = [
-            {y:1, x:2},
-            {y:2, x:1},
-            {y:-1, x:-2},
-            {y:-2, x:-1},
-            {y:-2, x: 1},
-            {y:1, x: -2},
-            {y:2, x:-1},
+            {y:1,x:2},
+            {y:2,x:1},
+            {y:-1,x:-2},
+            {y:-2,x:-1},
+            {y:-2,x:1},
+            {y:1,x:-2},
+            {y:2,x:-1},
             {y:-1,x:2}
         ];
 
@@ -155,7 +155,31 @@ const MOVIMINETOS = {
         return MOVIMINETOS.alfil(celda, tablero)
             .concat(MOVIMINETOS.torre(celda, tablero));
     },
-    rey: (celda, tablero) => []
+    rey: (celda, tablero) => {
+        let movimientos = [];
+        let coordenadas = celda.coordenadas;
+        let posiblesCoord = [
+            {y:1,x:0},
+            {y:0,x:1},
+            {y:-1,x:0},
+            {y:0,x:-1}
+        ]
+
+        let y,x,mv;
+        posiblesCoord.forEach((coord)=>{
+            y = coordenadas.y + coord.y;
+            x = coordenadas.x + coord.x;
+            if(exist(y) && exist(x)){
+                mv = tablero[y][x];
+
+                if(!mv.ficha || (mv.ficha && mv.ficha.color !== celda.ficha.color)){
+                    movimientos.push(mv);
+                }
+            }
+        });
+
+        return movimientos;
+    }
 }
 
 function exist(v) {

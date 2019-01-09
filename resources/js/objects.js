@@ -28,7 +28,7 @@ class Celda {
     }
 
     setFicha(ficha) {
-        if(this.ficha) this.removeFicha();
+        if (this.ficha) this.removeFicha();
         this.ficha = ficha;
         let img = this.element.getElementsByTagName('img')[0];
         img.src = 'resources/img/' + this.ficha.tipo + '.png';
@@ -60,6 +60,12 @@ class Celda {
     clearSelect() {
         this.element.style.backgroundColor = this.backgroundColor;
     }
+
+    pop(){
+        let ficha = this.ficha;
+        this.removeFicha();
+        return ficha;
+    }
 }
 
 class Chess {
@@ -76,6 +82,9 @@ class Chess {
             [],
             []
         ];
+        this.celdaSeleccionada;
+        this.celdaMover;
+        this.cledasRuta = [];
     }
 
     createTable() {
@@ -100,27 +109,46 @@ class Chess {
 
                 this.elemento.appendChild(cell);
 
-                let celda = new Celda(cell, backgroundColor, {y:i, x:k})
+                let celda = new Celda(cell, backgroundColor, {
+                    y: i,
+                    x: k
+                })
 
+                let coordenadas = [];
                 celda.element.onclick = (e) => {
-                    if (celda.ficha) celda.removeFicha();
-                    else celda.setFicha(new Ficha('peon', 0));
+
+                    console.log(coordenadas);
+                    if (!this.celdaSeleccionada && celda.ficha) {
+                        this.celdaSeleccionada = celda;
+                        this.cledasRuta = coordenadas;
+                    } else if (this.cledasRuta.some((c) => JSON.stringify(c) === JSON.stringify(celda))) {
+                        this.moverFicha(this.celdaSeleccionada, celda);
+                        this.clearRutaSeleccionada();
+                        this.cledasRuta = [];
+                        this.celdaSeleccionada = null;
+                    } else if(JSON.stringify(this.celdaSeleccionada) === JSON.stringify(celda)){
+                        this.celdaSeleccionada = null;
+                    }
 
                 }
 
-                let coordenadas = [];
                 celda.element.onmouseover = (e) => {
-                    coordenadas = celda.posiblesMovimientos(this.tablero);
+                    if (!this.celdaSeleccionada) {
+                        coordenadas = celda.posiblesMovimientos(this.tablero);
+                        console.log(coordenadas);
 
-                    coordenadas.forEach((celda) => {
-                        celda.selectRoute();
-                    });
+                        coordenadas.forEach((celda) => {
+                            celda.selectRoute();
+                        });
+                    }
                 }
 
                 celda.element.onmouseout = (e) => {
-                    coordenadas.forEach((celda) => {
-                        celda.clearSelect();
-                    });
+                    if (!this.celdaSeleccionada) {
+                        coordenadas.forEach((celda) => {
+                            celda.clearSelect();
+                        });
+                    }
                 }
 
 
@@ -133,46 +161,58 @@ class Chess {
         }
     }
 
-    setFicha(coordenadas, ficha){
+    setFicha(coordenadas, ficha) {
         this.tablero[coordenadas.y][coordenadas.x].setFicha(ficha);
     }
 
-    clearTablero(){
-        this.tablero.forEach((t)=>{
+    clearTablero() {
+        this.tablero.forEach((t) => {
             t.forEach((celda) => {
                 celda.removeFicha();
             });
         });
     }
 
-    colocarFichas(){
+    colocarFichas() {
         this.clearTablero();
 
         let tipos = ['torre', 'caballo', 'alfil', 'reina', 'rey', 'alfil', 'caballo', 'torre'];
-        
+
         //fichas blancas
         let fila = this.tablero[0];
-        for(let i = 0; i < fila.length;i++){
+        for (let i = 0; i < fila.length; i++) {
             fila[i].setFicha(new Ficha(tipos[i], 1));
         }
 
         fila = this.tablero[1];
 
-        fila.forEach((celda)=>{
+        fila.forEach((celda) => {
             celda.setFicha(new Ficha('peon', 1));
         });
 
         //fichas negras
         fila = this.tablero[7];
-        
-        for(let i = 0; i < fila.length;i++){
+
+        for (let i = 0; i < fila.length; i++) {
             fila[i].setFicha(new Ficha(tipos[i], 0));
         }
 
         fila = this.tablero[6];
 
-        fila.forEach((celda)=>{
+        fila.forEach((celda) => {
             celda.setFicha(new Ficha('peon', 0));
+        });
+    }
+
+    moverFicha(origen, destino) {
+        destino.setFicha(origen.pop());
+    }
+
+    clearRutaSeleccionada(){
+        this.tablero.forEach((t)=>{
+            t.forEach((celda)=>{
+                celda.clearSelect();
+            });
         });
     }
 }
