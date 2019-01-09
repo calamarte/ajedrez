@@ -83,7 +83,6 @@ class Chess {
             []
         ];
         this.celdaSeleccionada;
-        this.celdaMover;
         this.cledasRuta = [];
     }
 
@@ -117,7 +116,6 @@ class Chess {
                 let coordenadas = [];
                 celda.element.onclick = (e) => {
 
-                    console.log(coordenadas);
                     if (!this.celdaSeleccionada && celda.ficha) {
                         this.celdaSeleccionada = celda;
                         this.cledasRuta = coordenadas;
